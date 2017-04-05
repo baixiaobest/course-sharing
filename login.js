@@ -6,23 +6,31 @@ var router = express.Router();
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({extended:true}));
 
-var authenticate = function(err, req, res, userdata, callback){
+var authenticate = function(err, req, userdata){
     if(err || userdata == null || userdata.password !== req.body.password){
-            if(callback !== null)
-                callback();
-            else
-                res.send("authentication failed");
-            return;
+        return false;
     }
-    res.send('Welcome '+userdata.username);
+    return true;
 };
 
 router.post('/login', function(req, res){
-    database.findUserWithEmail(req.body.email, function(err, userdata){
-        authenticate(err, req, res, userdata, function(){
-            database.findUserWithUsername(req.body.email, function(err, userdata){
-                authenticate(err, req, res, userdata, null);
-            });
+    var next = function(userdata){
+        if(userdata !== null){
+            res.send('Welcome '+userdata.username);
+        }else{
+            res.redirect('register.html');
+        }
+    }
+
+    database.findUserWithEmail(req.body.username, function(err, userdata){
+        if(authenticate(err, req, userdata)){
+            return next(userdata);
+        }
+        database.findUserWithUsername(req.body.username, function(err, userdata){
+            if(authenticate(err, req, userdata)){
+                return next(userdata);
+            }
+            return next(null);
         });
     });
 });
