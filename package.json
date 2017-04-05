@@ -1,0 +1,16 @@
+{
+  "name": "nodeauth",
+  "version": "1.0.0",
+  "description": "authentication",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "author": "baixiao huang",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.17.1",
+    "express": "^4.15.2",
+    "mongodb": "^2.2.25"
+  }
+}
