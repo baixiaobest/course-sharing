@@ -33,7 +33,7 @@ var sendLoginHtmlWithAlert = function(res, message){
 }
 
 router.post('/login', function(req, res){
-    var next = function(userdata){
+    var nextAction = function(userdata){
         if(userdata !== null){
             res.send('Welcome '+userdata.username);
         }else{
@@ -41,6 +41,7 @@ router.post('/login', function(req, res){
         }
     }
 
+    // authenticate email, or username
     database.findUserWithEmail(req.body.username, function(err, userdata){
         if(authenticate(err, req, userdata)){
             return next(userdata);
@@ -49,7 +50,7 @@ router.post('/login', function(req, res){
             if(authenticate(err, req, userdata)){
                 return next(userdata);
             }
-            return next(null);
+            return nextAction(null);
         });
     });
 });
