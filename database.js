@@ -27,7 +27,7 @@ Database.prototype.findUserWithEmail = function(email, callback){
         cursor.toArray( function(err, items){
             if(err || items.length == 0){
                 db.close();
-                callback(err);
+                callback(err, null);
                 return;
             }
             db.close();
@@ -46,7 +46,7 @@ Database.prototype.findUserWithUsername = function(username, callback){
         cursor.toArray( function(err, items){
             if(err || items.length == 0){
                 db.close();
-                callback(err);
+                callback(err, null);
                 return;
             }
             db.close();
