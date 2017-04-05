@@ -2,9 +2,18 @@ var bodyParser = require('body-parser');
 var express = require('express');
 var database = require('./database');
 var router = express.Router();
+var cheerio = require('cheerio');
+var fs = require('fs');
 
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({extended:true}));
+
+// pre store the login page for dynamic content modification
+var loginHTMLpath = './Web/public/register.html';
+var loginHtml=null;
+fs.readFile(loginHTMLpath, function(err, data){
+    loginHtml = data;
+});
 
 var authenticate = function(err, req, userdata){
     if(err || userdata == null || userdata.password !== req.body.password){
@@ -13,12 +22,22 @@ var authenticate = function(err, req, userdata){
     return true;
 };
 
+var sendLoginHtmlWithAlert = function(res, message){
+    if(loginHtml == null)
+        setImmediate(sendLoginHtmlWithAlert);
+    $ = cheerio.load(loginHtml);
+    // display alert
+    $('.alert').css('display', 'block');
+    $('.alert').text(message);
+    res.send($.html());
+}
+
 router.post('/login', function(req, res){
     var next = function(userdata){
         if(userdata !== null){
             res.send('Welcome '+userdata.username);
         }else{
-            res.redirect('register.html');
+            sendLoginHtmlWithAlert(res, 'username/email and password combination not found!');
         }
     }
 

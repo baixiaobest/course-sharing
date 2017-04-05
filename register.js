@@ -18,17 +18,21 @@ fs.readFile(registerHTMLpath, function(err, data){
 // dependency on html structure
 var sendRegisterHtmlWithAlert = function(res, message){
     if(registerHtml == null)
-        setImmediate(sendHtmlWithAlert);
+        setImmediate(sendRegisterHtmlWithAlert);
     $ = cheerio.load(registerHtml);
+    
     // display alert
-    $('.alert').css('display', 'block');
-    $('.alert').text(message);
+    if(message != null){
+        $('.alert').css('display', 'block');
+        $('.alert').text(message);
+    }
     // select register tag
     $('#login-form-link').removeClass('active');
     $('#register-form-link').addClass('active');
     // display register form
     $("#login-form").css('display', 'none');
     $("#register-form").css('display', 'block');
+
     res.send($.html());
 };
 
@@ -40,7 +44,7 @@ var emailExists = function(res){
     sendRegisterHtmlWithAlert(res, 'Email already exists');
 };
 
-var passwordNotValid = function(res){
+var passwordInValid = function(res){
     sendRegisterHtmlWithAlert(res, 'Invalid password');
 };
 
@@ -75,7 +79,7 @@ router.post('/register', function(req, res){
         function(callback){
             if(password.length < 6){
                 callback('failed');
-                return passwordNotValid(res);
+                return passwordInValid(res);
             }
             callback(null);
         }
