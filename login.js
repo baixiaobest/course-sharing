@@ -4,6 +4,8 @@ var database = require('./database');
 var router = express.Router();
 var cheerio = require('cheerio');
 var fs = require('fs');
+var session = require('express-session');
+var sessionConfig = require('./sessionConfig');
 
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({extended:true}));
@@ -14,6 +16,17 @@ var loginHtml=null;
 fs.readFile(loginHTMLpath, function(err, data){
     loginHtml = data;
 });
+
+// authenticate session before login
+var authenticateSession = function(req, res, next){
+    if(req.session.username){
+        res.redirect('/private/dashboard');
+        return;
+    }
+    next();
+}
+
+router.use(session(sessionConfig));
 
 var authenticate = function(err, req, userdata){
     if(err || userdata == null || userdata.password !== req.body.password){
@@ -32,10 +45,11 @@ var sendLoginHtmlWithAlert = function(res, message){
     res.send($.html());
 }
 
-router.post('/login', function(req, res){
+router.post('/login', authenticateSession, function(req, res){
     var nextAction = function(userdata){
         if(userdata !== null){
-            res.send('Welcome '+userdata.username);
+            req.session.username = userdata.username;
+            res.redirect('/private/dashboard');
         }else{
             sendLoginHtmlWithAlert(res, 'username/email and password combination not found!');
         }
@@ -44,11 +58,11 @@ router.post('/login', function(req, res){
     // authenticate email, or username
     database.findUserWithEmail(req.body.username, function(err, userdata){
         if(authenticate(err, req, userdata)){
-            return next(userdata);
+            return nextAction(userdata);
         }
         database.findUserWithUsername(req.body.username, function(err, userdata){
             if(authenticate(err, req, userdata)){
-                return next(userdata);
+                return nextAction(userdata);
             }
             return nextAction(null);
         });

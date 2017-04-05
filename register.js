@@ -5,10 +5,14 @@ var database = require('./database');
 var router = express.Router();
 var cheerio = require('cheerio');
 var fs = require('fs');
+var session = require('express-session');
+var sessionConfig = require('./sessionConfig');
 
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({extended:true}));
+router.use(session(sessionConfig));
 
+// prestore register html
 var registerHTMLpath = './Web/public/register.html';
 var registerHtml=null;
 fs.readFile(registerHTMLpath, function(err, data){
@@ -48,8 +52,9 @@ var passwordInValid = function(res){
     sendRegisterHtmlWithAlert(res, 'Invalid password');
 };
 
-var passwordValid = function(res){
-    res.send('registration success');
+var registerationSucceeds = function(req, res, userdata){
+    req.session.username = userdata.username;
+    res.redirect('/private/dashboard');
 }
 
 router.post('/register', function(req, res){
@@ -85,7 +90,7 @@ router.post('/register', function(req, res){
         }
     ], function(err, result){
         if(!err)
-            passwordValid(res);
+            registerationSucceeds(req, res, {username: username, email:email, password:password});
     });
 });
 
