@@ -18,14 +18,7 @@ var streamFile = function(res, filePath, callback){
 }
 
 var send404 = function(res){
-    res.on('finish', function(){
-        res.end();
-    });
-    var readstream = fs.createReadStream('./Web/public/404.html');
-    readstream.pipe(res);
-    readstream.on('error', function(){
-        console.log('fail to send 404');
-    });
+    streamFile(res, './Web/public/404.html', function(){console.log('404 not sent')});
 }
 
 var authenticateSession = function(req, res, next){

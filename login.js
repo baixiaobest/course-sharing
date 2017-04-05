@@ -40,8 +40,10 @@ var sendLoginHtmlWithAlert = function(res, message){
         setImmediate(sendLoginHtmlWithAlert);
     $ = cheerio.load(loginHtml);
     // display alert
-    $('.alert').css('display', 'block');
-    $('.alert').text(message);
+    if(message !== null){
+        $('.alert').css('display', 'block');
+        $('.alert').text(message);
+    }
     res.send($.html());
 }
 
@@ -67,6 +69,17 @@ router.post('/login', authenticateSession, function(req, res){
             return nextAction(null);
         });
     });
+});
+
+router.get('/login', function(req, res){
+    sendLoginHtmlWithAlert(res, null);
+});
+
+router.get('/logout', function(req, res){
+    if(req.session.username){
+        delete req.session;
+    }
+    res.redirect('/login');
 });
 
 module.exports = router;

@@ -94,4 +94,8 @@ router.post('/register', function(req, res){
     });
 });
 
+router.get('/register', function(req, res){
+    sendRegisterHtmlWithAlert(res, null);
+});
+
 module.exports = router;
