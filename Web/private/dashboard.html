@@ -19,13 +19,13 @@
     <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
-    <link href="/css/jumbotron.css" rel="stylesheet">
+    <link href="/css/Dashboard.css" rel="stylesheet">
 
   </head>
 
   <body>
 
-    <nav class="navbar navbar-inverse navbar-fixed-top">
+    <nav class="navbar navbar-inverse navbar-default">
       <div class="container">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -46,16 +46,107 @@
         </ul>
 
         <ul class="nav navbar-nav pull-left">
-          <li><a href="#">Message</a></li>
-          <li><a href="#">Forum</a></li>
-          <li><a href="#">Profile</a></li>
+          <li><a href="#"><span class="glyphicon glyphicon-envelope"></span>Message</a></li>
+          <li><a href="#"><span class="glyphicon glyphicon-comment"></span>Forum</a></li>
+          <li><a href="#"><span class="glyphicon glyphicon-cog"></span>Profile</a></li>
         </ul>
         </div><!--/.navbar-collapse -->
       
       </div>
-
-
     </nav>
+
+    <div class="row">
+      <div class="col-xs-10 col-xs-offset-1 col-sm-8 col-sm-offset-2 col-md-4 col-md-offset-1">
+        <div class="panel panel-primary panel-fixed-height">
+          <div class="panel-heading">
+            <h3 class="panel-title">Contributions</h3>
+          </div>
+          <div class="panel-body">
+            <p><strong>25</strong> Files Uploads</p>
+            <p><strong>45</strong> Files Download</p>
+            <p><strong>25</strong> Questions Answered</p>
+            <p><strong>78</strong> Questions Posted</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xs-10 col-xs-offset-1 col-sm-8 col-sm-offset-2 col-md-4 col-md-offset-1">
+        <div class="panel-fixed-height panel panel-success">
+          <div class="panel-heading">
+            <h3 class="panel-title">Favorites</h3>
+          </div>
+          <div class="panel-body">
+            <a><button type="button" class="btn btn-default" aria-label="Left Align">
+            <span class="glyphicon glyphicon-folder-close" aria-hidden="true"></span>
+            CS133</a>
+            </button>
+
+            <a><button type="button" class="btn btn-default" aria-label="Left Align">
+            <span class="glyphicon glyphicon-folder-close" aria-hidden="true"></span>
+            Anthropology 8</a>
+            </button>
+
+            <a><button type="button" class="btn btn-default" aria-label="Left Align">
+            <span class="glyphicon glyphicon-folder-close" aria-hidden="true"></span>
+            Astronomy 4</a>
+            </button>
+
+            <a><button type="button" class="btn btn-default" aria-label="Left Align">
+            <span class="glyphicon glyphicon-folder-close" aria-hidden="true"></span>
+            Digital Circuit Final Materials</a>
+            </button>
+
+            <a><button type="button" class="btn btn-default" aria-label="Left Align">
+            <span class="glyphicon glyphicon-folder-close" aria-hidden="true"></span>
+            Data Science: Data Mining</a>
+            </button>
+            
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+
+    <div class="row">
+      <div class="col-xs-10 col-xs-offset-1 col-sm-8 col-sm-offset-2 col-md-4 col-md-offset-1">
+        <div class="panel-fixed-height panel panel-info">
+          <div class="panel-heading">
+            <h3 class="panel-title">Recent Uploads</h3>
+          </div>
+          <div class="panel-body">
+            <div class="list-group">
+            <button type="button" class="list-group-item">EE115 homework5<span class="badge">10 pt</span></button>
+            <button type="button" class="list-group-item">Anthropology 12<span class="badge">10pt</span></button>
+            <button type="button" class="list-group-item">Japan 50<span class="badge">5pt</span></button>
+            <button type="button" class="list-group-item">Bug Blast Code<span class="badge">50pt</span></button>
+            <button type="button" class="list-group-item">CS31 midterm<span class="badge">20pt</span></button>
+          </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="col-xs-10 col-xs-offset-1 col-sm-8 col-sm-offset-2 col-md-4 col-md-offset-1">
+        <div class="panel-fixed-height panel panel-warning">
+          <div class="panel-heading">
+            <h3 class="panel-title">Recent Downloads</h3>
+          </div>
+          <div class="panel-body">
+            <div class="list-group">
+            <button type="button" class="list-group-item">EE115 homework4</button>
+            <button type="button" class="list-group-item">Anthropology 12 hw2</button>
+            <button type="button" class="list-group-item">Japan 50 hw3</button>
+            <button type="button" class="list-group-item">CS31 Final</button>
+          </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+
+
 
       <footer>
         <p>&copy; 2016 Course Sharing, Inc.</p>

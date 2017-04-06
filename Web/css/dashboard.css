@@ -1,0 +1,7 @@
+.panel-offset{
+    margin-top: 100px;
+}
+
+.panel-fixed-height{
+    min-height: 250px;
+}
