@@ -1,4 +1,5 @@
-var MongoClient = require('mongodb').MongoClient;
+var mongoose = require('mongoose');
+var databaseSchemas = require('./databaseSchema');
 
 var productionCode = false;
 var url = '';
@@ -7,56 +8,32 @@ if(productionCode)
 else
     url = 'mongodb://localhost:27017/nodeauth';
 
+mongoose.connect(url);
+var db = mongoose.connection;
+db.on('error', function(){console.error('mongodb connection error at '+url);});
+db.once('open', function(){console.log('mongodb connected at '+url);});
+
+var usersModel = mongoose.model('users', databaseSchemas.usersSchema);
+
 function Database(){
     
 }
 
-var connect = function(callback){
-    MongoClient.connect(url, function(err, db){
-        if(err){
-            console.log('fail to connect to mongodb '+databaseName);
-            callback(err);
-            return;
-        }
-        callback(null, db);
-    })
-};
-
 Database.prototype.findUserWithEmail = function(email, callback){
-    connect(function(err, db){
-        if(err){
-            callback(err);
-            return;
+    usersModel.findOne({email:email}, function(err, userdata){
+        if(err || userdata == null){
+            return callback(err, null);
         }
-        var cursor = db.collection('users').find({'email':email}).limit(1);
-        cursor.toArray( function(err, items){
-            if(err || items.length == 0){
-                db.close();
-                callback(err, null);
-                return;
-            }
-            db.close();
-            callback(null, items[0]);
-        });
+        callback(null, userdata);
     });
 };
 
 Database.prototype.findUserWithUsername = function(username, callback){
-    connect(function(err, db){
-        if(err){
-            callback(err);
-            return;
+    usersModel.findOne({username:username}, function(err, userdata){
+        if(err || userdata == null){
+            return callback(err, null);
         }
-        var cursor = db.collection('users').find({'username':username}).limit(1);
-        cursor.toArray( function(err, items){
-            if(err || items.length == 0){
-                db.close();
-                callback(err, null);
-                return;
-            }
-            db.close();
-            callback(null, items[0]);
-        });
+        callback(null, userdata);
     });
 };
 
@@ -65,14 +42,10 @@ Database.prototype.addUser = function(userdata, callback){
         callback('userdata not complete');
         return;
     }
-    connect(function(err, db){
+    usersModel.create(userdata, function(err, data){
         if(err){
-            callback(err);
-            return;
+            callback('cannot add user to database');
         }
-        db.collection('users').insertOne(userdata);
-        db.close();
-        callback();
     });
 };
 
