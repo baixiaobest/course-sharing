@@ -1,13 +1,18 @@
 var MongoClient = require('mongodb').MongoClient;
 
-var url = 'mongodb://baixiaobest:baixiao123Qq@ds153710.mlab.com:53710/heroku_svf3wf7n';
+var productionCode = false;
+var url = '';
+if(productionCode)
+    url = 'mongodb://baixiaobest:baixiao123Qq@ds153710.mlab.com:53710/heroku_svf3wf7n';
+else
+    url = 'mongodb://localhost:27017/nodeauth';
 
 function Database(){
     
 }
 
-var connect = function(databaseName, callback){
-    MongoClient.connect(url+databaseName, function(err, db){
+var connect = function(callback){
+    MongoClient.connect(url, function(err, db){
         if(err){
             console.log('fail to connect to mongodb '+databaseName);
             callback(err);
@@ -18,7 +23,7 @@ var connect = function(databaseName, callback){
 };
 
 Database.prototype.findUserWithEmail = function(email, callback){
-    connect('', function(err, db){
+    connect(function(err, db){
         if(err){
             callback(err);
             return;
@@ -37,7 +42,7 @@ Database.prototype.findUserWithEmail = function(email, callback){
 };
 
 Database.prototype.findUserWithUsername = function(username, callback){
-    connect('', function(err, db){
+    connect(function(err, db){
         if(err){
             callback(err);
             return;
@@ -60,7 +65,7 @@ Database.prototype.addUser = function(userdata, callback){
         callback('userdata not complete');
         return;
     }
-    connect('', function(err, db){
+    connect(function(err, db){
         if(err){
             callback(err);
             return;
