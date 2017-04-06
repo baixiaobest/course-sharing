@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 var databaseSchemas = require('./databaseSchema');
 
-var productionCode = false;
+var productionCode = true;
 var url = '';
 if(productionCode)
     url = 'mongodb://baixiaobest:baixiao123Qq@ds153710.mlab.com:53710/heroku_svf3wf7n';
