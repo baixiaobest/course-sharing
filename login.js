@@ -35,6 +35,7 @@ var authenticate = function(err, req, userdata){
     return true;
 };
 
+// dependency on html content, this function should be deleted
 var sendLoginHtmlWithAlert = function(res, message){
     if(loginHtml == null)
         setImmediate(sendLoginHtmlWithAlert);
@@ -77,7 +78,7 @@ router.get('/login', function(req, res){
 
 router.get('/logout', function(req, res){
     if(req.session.username){
-        delete req.session;
+        req.session.destroy();
     }
     res.redirect('/login');
 });

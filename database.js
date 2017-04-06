@@ -55,4 +55,20 @@ Database.prototype.findUserWithUsername = function(username, callback){
     });
 };
 
+Database.prototype.addUser = function(userdata, callback){
+    if(!userdata.username || !userdata.email || !userdata.password){
+        callback('userdata not complete');
+        return;
+    }
+    connect('nodeauth', function(err, db){
+        if(err){
+            callback(err);
+            return;
+        }
+        db.collection('users').insertOne(userdata);
+        db.close();
+        callback();
+    });
+};
+
 module.exports = new Database();

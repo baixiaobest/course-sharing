@@ -19,7 +19,7 @@ fs.readFile(registerHTMLpath, function(err, data){
     registerHtml = data;
 });
 
-// dependency on html structure
+// dependency on html content, this function should be deleted
 var sendRegisterHtmlWithAlert = function(res, message){
     if(registerHtml == null)
         setImmediate(sendRegisterHtmlWithAlert);
@@ -54,6 +54,11 @@ var passwordInValid = function(res){
 
 var registerationSucceeds = function(req, res, userdata){
     req.session.username = userdata.username;
+    database.addUser(userdata, function(err){
+        if(err){
+            console.log('database error');
+        }
+    });
     res.redirect('/private/dashboard');
 }
 
