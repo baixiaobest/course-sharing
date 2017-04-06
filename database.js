@@ -60,7 +60,7 @@ Database.prototype.addUser = function(userdata, callback){
         callback('userdata not complete');
         return;
     }
-    connect('nodeauth', function(err, db){
+    connect('', function(err, db){
         if(err){
             callback(err);
             return;
