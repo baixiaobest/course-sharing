@@ -2,20 +2,14 @@ var bodyParser = require('body-parser');
 var express = require('express');
 var database = require('./database');
 var router = express.Router();
-var cheerio = require('cheerio');
 var fs = require('fs');
 var session = require('express-session');
 var sessionConfig = require('./sessionConfig');
 
+var loginHTMLpath = './Web/public/register.html';
+
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({extended:true}));
-
-// pre store the login page for dynamic content modification
-var loginHTMLpath = './Web/public/register.html';
-var loginHtml=null;
-fs.readFile(loginHTMLpath, function(err, data){
-    loginHtml = data;
-});
 
 // authenticate session before login
 var authenticateSession = function(req, res, next){
@@ -35,27 +29,16 @@ var authenticate = function(err, req, userdata){
     return true;
 };
 
-// dependency on html content, this function should be deleted
-var sendLoginHtmlWithAlert = function(res, message){
-    if(loginHtml == null)
-        setImmediate(sendLoginHtmlWithAlert);
-    $ = cheerio.load(loginHtml);
-    // display alert
-    if(message !== null){
-        $('.alert').css('display', 'block');
-        $('.alert').text(message);
-    }
-    res.send($.html());
-}
-
 router.post('/login', authenticateSession, function(req, res){
     var nextAction = function(userdata){
+        var data;
         if(userdata !== null){
             req.session.username = userdata.username;
-            res.redirect('/private/dashboard');
+            data = {success: true, url: '/private/dashboard'};
         }else{
-            sendLoginHtmlWithAlert(res, 'username/email and password combination not found!');
+            data = {success: false, url:'#', message: 'username/email and password combination not found!'};
         }
+        res.send(data);
     }
 
     // authenticate email, or username
@@ -73,7 +56,11 @@ router.post('/login', authenticateSession, function(req, res){
 });
 
 router.get('/login', function(req, res){
-    sendLoginHtmlWithAlert(res, null);
+    var readStream = fs.createReadStream(loginHTMLpath);
+    readStream.pipe(res);
+    readStream.on('error', function(){
+        res.redirect('/404');
+    })
 });
 
 router.get('/logout', function(req, res){

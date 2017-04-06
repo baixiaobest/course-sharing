@@ -3,7 +3,6 @@ var express = require('express');
 var async = require('async');
 var database = require('./database');
 var router = express.Router();
-var cheerio = require('cheerio');
 var fs = require('fs');
 var session = require('express-session');
 var sessionConfig = require('./sessionConfig');
@@ -19,37 +18,16 @@ fs.readFile(registerHTMLpath, function(err, data){
     registerHtml = data;
 });
 
-// dependency on html content, this function should be deleted
-var sendRegisterHtmlWithAlert = function(res, message){
-    if(registerHtml == null)
-        setImmediate(sendRegisterHtmlWithAlert);
-    $ = cheerio.load(registerHtml);
-    
-    // display alert
-    if(message != null){
-        $('.alert').css('display', 'block');
-        $('.alert').text(message);
-    }
-    // select register tag
-    $('#login-form-link').removeClass('active');
-    $('#register-form-link').addClass('active');
-    // display register form
-    $("#login-form").css('display', 'none');
-    $("#register-form").css('display', 'block');
-
-    res.send($.html());
-};
-
 var usernameExits = function(res){
-    sendRegisterHtmlWithAlert(res, 'Username already exists');
+    res.send({success: false, message: 'Username already exists'});
 };
 
 var emailExists = function(res){
-    sendRegisterHtmlWithAlert(res, 'Email already exists');
+    res.send({success: false, message: 'Email already exists'});
 };
 
 var passwordInValid = function(res){
-    sendRegisterHtmlWithAlert(res, 'Invalid password');
+    res.send({success: false, message: 'Invalid password'});
 };
 
 var registerationSucceeds = function(req, res, userdata){
@@ -59,7 +37,7 @@ var registerationSucceeds = function(req, res, userdata){
             console.log('database error');
         }
     });
-    res.redirect('/private/dashboard');
+    res.send({success: true, url: '/private/dashboard'});
 }
 
 router.post('/register', function(req, res){
@@ -100,7 +78,12 @@ router.post('/register', function(req, res){
 });
 
 router.get('/register', function(req, res){
-    sendRegisterHtmlWithAlert(res, null);
+    var readStream = fs.createReadStream(registerHTMLpath);
+    readStream.pipe(res);
+    readStream.on('error', function(){
+        res.redirect('/404')
+    })
+    // sendRegisterHtmlWithAlert(res, null);
 });
 
 module.exports = router;

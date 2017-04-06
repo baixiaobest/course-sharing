@@ -10,6 +10,12 @@
 
     <title>Course Sharing</title>
 
+    <!--jQuery-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+
+    <!--index JS file-->
+    <script src="JS/indexJQ.js"></script>
+
     <!-- Bootstrap core CSS -->
     <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
@@ -32,18 +38,18 @@
           <a class="navbar-brand" href="/">Course Sharing</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
-          <form action="/login" method="POST" class="navbar-form navbar-right">
+          <div class="navbar-form navbar-right">
             <div class="form-group">
-              <input name="username" type="text" placeholder="Username or Email" class="form-control">
+              <input id="username" name="username" type="text" placeholder="Username or Email" class="form-control">
             </div>
             <div class="form-group">
-              <input name="password" type="password" placeholder="Password" class="form-control">
+              <input id="password" name="password" type="password" placeholder="Password" class="form-control">
             </div>
             <div class="btn-group" role="group">
-              <button type="submit" class="btn btn-success">Sign in</button>
+              <button id="sign-in" type="submit" class="btn btn-success">Sign in</button>
               <a href="/register" class="btn btn-primary navbar-right">Sign Up</a>
             </div>
-          </form>
+          </div>
         </div><!--/.navbar-collapse -->
       </div>
     </nav>
