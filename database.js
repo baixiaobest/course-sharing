@@ -1,6 +1,6 @@
 var MongoClient = require('mongodb').MongoClient;
 
-var url = 'mongodb://localhost:27017/';
+var url = 'mongodb://baixiaobest:baixiao123Qq@ds153710.mlab.com:53710/heroku_svf3wf7n';
 
 function Database(){
     
