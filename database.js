@@ -18,7 +18,7 @@ var connect = function(databaseName, callback){
 };
 
 Database.prototype.findUserWithEmail = function(email, callback){
-    connect('nodeauth', function(err, db){
+    connect('', function(err, db){
         if(err){
             callback(err);
             return;
@@ -37,7 +37,7 @@ Database.prototype.findUserWithEmail = function(email, callback){
 };
 
 Database.prototype.findUserWithUsername = function(username, callback){
-    connect('nodeauth', function(err, db){
+    connect('', function(err, db){
         if(err){
             callback(err);
             return;
