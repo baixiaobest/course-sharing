@@ -39,14 +39,31 @@ Database.prototype.findUserWithUsername = function(username, callback){
 
 Database.prototype.addUser = function(userdata, callback){
     if(!userdata.username || !userdata.email || !userdata.password){
-        callback('userdata not complete');
-        return;
+        return callback('userdata not complete');
     }
     usersModel.create(userdata, function(err, data){
         if(err){
-            callback('cannot add user to database');
+            return callback('cannot add user to database');
         }
     });
 };
+
+Database.prototype.updateUser = function(oldname, newProfile, callback){
+    usersModel.update({username:oldname}, {$set: newProfile}, function(err){
+        if(err){
+            return callback(err);
+        }
+        callback(null);
+    });
+}
+
+Database.prototype.updatePassword = function(username, password, callback){
+    usersModel.update({username: username}, {$set: {password:password}}, function(err){
+        if(err){
+            return callback(err);
+        }
+        callback(null);
+    });
+}
 
 module.exports = new Database();

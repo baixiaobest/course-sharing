@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Course Sharing</title>
+
+    <!--jQuery-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+
+    <script src="/JS/profileJQ.js"></script>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="/css/Dashboard.css" rel="stylesheet">
+
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-inverse navbar-default">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">Dashboard</a>
+        </div>
+
+
+        <div id="navbar" class="navbar-collapse collapse">
+        <a href="/logout" class="btn btn-primary navbar-btn pull-right">Logout</a>
+
+        <ul class="nav navbar-nav pull-right">
+          <p id='greeting' class="navbar-text pull-right">Hello, </p>
+        </ul>
+
+        <ul class="nav navbar-nav pull-left">
+          <li><a href="#"><span class="glyphicon glyphicon-envelope"></span>Message</a></li>
+          <li><a href="#"><span class="glyphicon glyphicon-comment"></span>Forum</a></li>
+          <li><a href="#"><span class="glyphicon glyphicon-cog"></span>Profile</a></li>
+        </ul>
+        </div><!--/.navbar-collapse -->
+      
+      </div>
+    </nav>
+
+    <div class="alert alert-danger col-xs-10 col-xs-offset-1 col-sm-8 col-sm-offset-2 col-md-8 col-md-offset-2" style="display:none" role="alert"></div>
+    <div class="alert alert-success col-xs-10 col-xs-offset-1 col-sm-8 col-sm-offset-2 col-md-8 col-md-offset-2" style="display:none" role="alert"></div>
+
+
+    <div class="row">
+      <div class="col-xs-10 col-xs-offset-1 col-sm-8 col-sm-offset-2 col-md-8 col-md-offset-2">
+        <div class="panel panel-primary panel-fixed-height">
+          <div class="panel-heading">
+            <h3 class="panel-title">Basic Profile</h3>
+          </div>
+          <div class="panel-body">
+                <label>Name</label>
+                <input id="name" type="text" class="form-control">
+                <label>Username</label>
+                <input id="username" type="text" class="form-control">
+                <label>Email</label>
+                <input id="email" type="text" class="form-control">
+                
+                <label>School</label>
+                <div class="dropdown">
+                <button id="school" class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                Select Your School
+                <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                    <li class="selectSchool"><a>Select Your School</a></li>
+                    <li role="separator" class="divider"></li>
+                    <li class="selectSchool"><a>University of California, Los Angeles</a></li>
+                    <li class="selectSchool"><a>University of Southern California</a></li>
+                </ul>
+                </div>
+                <input id="updateProfile" type="submit" class="btn btn-info pull-right" value="Update">
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-xs-10 col-xs-offset-1 col-sm-8 col-sm-offset-2 col-md-8 col-md-offset-2">
+        <div class="panel panel-danger panel-fixed-height">
+          <div class="panel-heading">
+            <h3 class="panel-title">Set New Password</h3>
+          </div>
+            <div class="panel-body">
+                
+                <label>Old Password</label>
+                <input id="oldPassword" type="password" class="form-control" required>
+                <label>New Password</label>
+                <input id="newPassword" type="password" class="form-control" required>
+                <label>Retype New Password</label>
+                <input id="retypePassword" type="password" class="form-control" required>
+
+                <input id="updatePassword" type="submit" class="btn btn-danger pull-right" value="Set New Password">
+            </div>
+        </div>
+        </div>
+    </div>
+
+
+
+      <footer>
+        <p>&copy; 2016 Course Sharing, Inc.</p>
+      </footer>
+    </div> <!-- /container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
+    <script src="/bootstrap/js/bootstrap.min.js"></script>
+  </body>
+</html>
