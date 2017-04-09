@@ -62,15 +62,18 @@ $(document).ready(function(){
     });
 
     $('#upload-btn').click(function(){
+        cleanMessages();
         var formData = new FormData();
         var size=0;
         for(var filename in fileObj){
             if(fileObj.hasOwnProperty(filename)){
                 formData.append('uploads[]', fileObj[filename], filename);
+                size++;
             }
         }
+        if(size==0)
+            return alertDanger('No file is attached');
         if($('#school').text() == 'None' || !$('#className').val()){
-            cleanMessages();
             return alertDanger('Please fill up school and class name');
         }
         removeFileNames();
@@ -82,7 +85,6 @@ $(document).ready(function(){
             processData: false,
             contentType: false,
             success: function(data){
-                cleanMessages();
                 if(data.success){
                     alertSuccess('Upload Success');
                 }else{
