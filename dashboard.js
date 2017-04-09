@@ -12,7 +12,9 @@ var authenticateSession = function(req, res, next){
     if(!req.session.username){
         res.redirect('/404');
     }else{
-        req.session.maxAge = sessionConfig.cookie.maxAge;
+        // update cookie and send it back
+        // so session can be extended
+        req.session.timestamp = Date.now();
         next();
     }
 };
@@ -35,6 +37,15 @@ router.get('/private/dashboard', function(req, res){
 router.get('/private/profile', function(req, res){
     sendFile(res, './Web/private/profile.html');
 });
+
+router.get('/private/upload', function(req, res){
+    sendFile(res, './Web/private/upload.html');
+});
+
+
+////////////////////////////////
+/////////     AJAX    //////////
+////////////////////////////////
 
 router.get('/private/ajax/username', function(req, res){
     res.json({username:req.session.username});
@@ -97,11 +108,16 @@ router.post('/private/ajax/updatePassword', function(req, res){
             database.updatePassword(username, newPassword, function(err){
                 if(err){
                     return console.log('updatePassword failed');
-                } 
+                }
                 res.send({success: true});
             });
         }
     });
+});
+
+
+router.post('/private/ajax/uploadFiles', function(req, res){
+    res.send({success:true});
 });
 
 module.exports = router;
