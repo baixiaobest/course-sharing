@@ -6,6 +6,7 @@ var router = express.Router();
 var fs = require('fs');
 var session = require('express-session');
 var sessionConfig = require('./sessionConfig');
+var bcrypt = require('bcrypt');
 
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({extended:true}));
@@ -32,12 +33,18 @@ var passwordInValid = function(res){
 
 var registerationSucceeds = function(req, res, userdata){
     req.session.username = userdata.username;
-    database.addUser(userdata, function(err){
+    bcrypt.hash(userdata.password, 10, function(err, hash){
         if(err){
-            console.log('database error');
+            return console.log('password hashing error');
         }
+        userdata.password = hash;
+        database.addUser(userdata, function(err){
+            if(err){
+                console.log('database error');
+            }
+        });
+        res.send({success: true, url: '/private/dashboard'});
     });
-    res.send({success: true, url: '/private/dashboard'});
 }
 
 router.post('/register', function(req, res){

@@ -5,6 +5,8 @@ var router = express.Router();
 var fs = require('fs');
 var session = require('express-session');
 var sessionConfig = require('./sessionConfig');
+var bcrypt = require('bcrypt');
+var async = require('async');
 
 var loginHTMLpath = './Web/public/register.html';
 
@@ -22,10 +24,15 @@ var authenticateSession = function(req, res, next){
 
 router.use(session(sessionConfig));
 
-var authenticate = function(err, req, userdata){
-    if(err || userdata == null || userdata.password !== req.body.password){
-        return false;
+var authenticate = function(err, req, userdata, callback){
+    if(err || userdata == null){
+        return callback(false);
     }
+    bcrypt.compare(req.body.password, userdata.password, function(err, res){
+        if(err)
+            return callback(false);
+        callback(res);
+    });
     return true;
 };
 
@@ -41,17 +48,27 @@ router.post('/login', authenticateSession, function(req, res){
         res.send(data);
     }
 
-    // authenticate email, or username
-    database.findUserWithEmail(req.body.username, function(err, userdata){
-        if(authenticate(err, req, userdata)){
-            return nextAction(userdata);
+    async.series([
+        function(callback){
+            database.findUserWithEmail(req.body.username, function(err, userdata){
+                authenticate(err, req, userdata, function(res){
+                    if(res)
+                        return nextAction(userdata);
+                    callback(null);
+                });
+            });
+        },
+        function(callback){
+            database.findUserWithUsername(req.body.username, function(err, userdata){
+                authenticate(err, req, userdata, function(res){
+                    if(res)
+                        return nextAction(userdata);
+                    callback(null);
+                });
+            });
         }
-        database.findUserWithUsername(req.body.username, function(err, userdata){
-            if(authenticate(err, req, userdata)){
-                return nextAction(userdata);
-            }
-            return nextAction(null);
-        });
+    ], function(err, res){
+        nextAction(null);
     });
 });
 
