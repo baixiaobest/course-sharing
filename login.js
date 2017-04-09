@@ -28,10 +28,10 @@ var authenticate = function(err, req, userdata, callback){
     if(err || userdata == null){
         return callback(false);
     }
-    bcrypt.compare(req.body.password, userdata.password, function(err, res){
+    bcrypt.compare(req.body.password, userdata.password, function(err, result){
         if(err)
             return callback(false);
-        callback(res);
+        callback(result);
     });
     return true;
 };
@@ -51,8 +51,8 @@ router.post('/login', authenticateSession, function(req, res){
     async.series([
         function(callback){
             database.findUserWithEmail(req.body.username, function(err, userdata){
-                authenticate(err, req, userdata, function(res){
-                    if(res)
+                authenticate(err, req, userdata, function(result){
+                    if(result)
                         return nextAction(userdata);
                     callback(null);
                 });
@@ -60,14 +60,14 @@ router.post('/login', authenticateSession, function(req, res){
         },
         function(callback){
             database.findUserWithUsername(req.body.username, function(err, userdata){
-                authenticate(err, req, userdata, function(res){
-                    if(res)
+                authenticate(err, req, userdata, function(result){
+                    if(result)
                         return nextAction(userdata);
                     callback(null);
                 });
             });
         }
-    ], function(err, res){
+    ], function(err, result){
         nextAction(null);
     });
 });

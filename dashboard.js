@@ -5,6 +5,7 @@ var fs = require('fs');
 var sessionConfig = require('./sessionConfig');
 var session = require('express-session');
 var database = require('./database');
+var bcrypt = require('bcrypt');
 
 router.use(bodyParser.json());
 
@@ -102,16 +103,17 @@ router.post('/private/ajax/updatePassword', function(req, res){
         if(err || userdata == null){
             return console.log('/private/ajax/updatePassword failed for '+username);
         }
-        if(userdata.password !== oldPassword){
-            res.send({success:false, message: 'Old password does not match'});
-        }else{
-            database.updatePassword(username, newPassword, function(err){
-                if(err){
-                    return console.log('updatePassword failed');
-                }
-                res.send({success: true});
+        bcrypt.compare(oldPassword, userdata.password, function(err, result){
+            if(!result)
+                return res.send({success:false, message: 'Old password does not match'});
+            bcrypt.hash(newPassword, 10, function(err, hash){
+                database.updatePassword(username, hash, function(err){
+                    if(err)
+                        return console.log('password update failed');
+                    res.send({success: true});
+                });
             });
-        }
+        });
     });
 });
 
