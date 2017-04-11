@@ -6,6 +6,9 @@ var sessionConfig = require('./sessionConfig');
 var session = require('express-session');
 var database = require('./database');
 var bcrypt = require('bcrypt');
+var formidable = require('formidable');
+var async = require('async');
+var path = require('path');
 
 router.use(bodyParser.json());
 
@@ -20,29 +23,26 @@ var authenticateSession = function(req, res, next){
     }
 };
 
-var sendFile = function(res, path){
+var sendFile = function(res, path, callback){
     var filestream = fs.createReadStream(path);
     filestream.pipe(res);
     filestream.on('error', function(){
-        console.log('cannot find dashboard.html');
+        console.log('cannot find '+path);
+        callback('cannot find file');
     });
 };
 
 router.use(session(sessionConfig));
 router.use(authenticateSession);
 
-router.get('/private/dashboard', function(req, res){
-    sendFile(res, './Web/private/dashboard.html');
+router.get('/private/:privateFile', function(req, res){
+    sendFile(res, './Web/private/'+req.params.privateFile+'.html', 
+        function(err){
+            if(err)
+                res.redirect('/404');
+        }
+    );
 });
-
-router.get('/private/profile', function(req, res){
-    sendFile(res, './Web/private/profile.html');
-});
-
-router.get('/private/upload', function(req, res){
-    sendFile(res, './Web/private/upload.html');
-});
-
 
 ////////////////////////////////
 /////////     AJAX    //////////
@@ -119,7 +119,38 @@ router.post('/private/ajax/updatePassword', function(req, res){
 
 
 router.post('/private/ajax/uploadFiles', function(req, res){
-    res.send({success:true});
+    var fileInfo = {};
+    var files = [];
+    var form = new formidable.IncomingForm();
+    form.multiples = true;
+    form.uploadDir = './Uploads';
+    
+    form.on('file', function(field, file){
+        files.push(file);
+    });
+
+    form.on('field', function(name, value){
+        fileInfo[name] = value;
+    });
+
+    form.on('end', function(){
+        async.eachLimit(files, 10, function(file, callback){
+            var hashName = path.basename(file.path);
+            var extension = path.extname(file.name);
+            var fileName = path.basename(file.name, extension);
+            var filePath = path.join(form.uploadDir, fileName+'_'+hashName+extension);
+            fs.rename(file.path, filePath, function(err){
+                database.addFile(fileName, filePath, fileInfo['class'], fileInfo['school'], callback);
+            }); 
+        }, function(err){
+            if(err){
+                return console.log('File upload cannot register to database');
+            }
+        });
+        res.send({success: true});
+    });
+
+    form.parse(req);
 });
 
 module.exports = router;

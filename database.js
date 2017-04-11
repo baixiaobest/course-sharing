@@ -14,6 +14,7 @@ db.on('error', function(){console.error('mongodb connection error at '+url);});
 db.once('open', function(){console.log('mongodb connected at '+url);});
 
 var usersModel = mongoose.model('users', databaseSchemas.usersSchema);
+var uploadFileModel = mongoose.model('uploadFiles', databaseSchemas.uploadFilesSchema);
 
 function Database(){
     
@@ -63,6 +64,20 @@ Database.prototype.updatePassword = function(username, password, callback){
             return callback(err);
         }
         callback(null);
+    });
+}
+
+Database.prototype.addFile = function(filename, filenamePath, className, school, callback){
+    var data = {
+        filename: filename, 
+        filenamePath: filenamePath, 
+        className: className,
+        school: school
+    };
+    uploadFileModel.create(data, function(err, data){
+        if(err)
+            return callback(err);
+        callback();
     });
 }
 

@@ -76,7 +76,10 @@ $(document).ready(function(){
         if($('#school').text() == 'None' || !$('#className').val()){
             return alertDanger('Please fill up school and class name');
         }
+        formData.set('school', $('#school').text());
+        formData.set('class', $('#className').val());
         removeFileNames();
+        fileObj = {};
 
         $.ajax({
             url: '/private/ajax/uploadFiles',

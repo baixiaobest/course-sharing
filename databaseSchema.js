@@ -9,4 +9,12 @@ var usersSchema = new Schema({
     school: String
 });
 
+var uploadFilesSchema = new Schema({
+    filename: String,
+    filenamePath: String,
+    className: String,
+    school: String
+});
+
 module.exports.usersSchema = usersSchema;
+module.exports.uploadFilesSchema = uploadFilesSchema;
