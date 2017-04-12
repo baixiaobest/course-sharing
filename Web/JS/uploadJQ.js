@@ -1,5 +1,7 @@
 var fileObj = {};
 var uploadFileNum = 0;
+var uploadedSize = 0;
+
 var displayFileName = function(filename){
     $('#upload-icon').css('display','none');
     $('#upload-names')
@@ -35,6 +37,47 @@ var alertSuccess = function(message){
     $('.alert-success').text(message);
 }
 
+var resetIconAndProgress = function(){
+    $('#upload-icon').css('display','inline');
+    $('.progress').css('display','none');
+}
+
+var uploadFile = function(file, signedRequest, contentType, totalFileSize, callback){
+    var formData = new FormData();
+    formData.append('file', file, file.name);
+    $('#upload-icon').css('display','none');
+    $.ajax({
+        url: signedRequest,
+        type: 'PUT',
+        contentType: contentType,
+        processData: false,
+        data: formData,
+        success: function(){
+            callback();
+        },
+        error: function(err){
+            callback(err);
+        },
+        // monitor the progress, update progress bar
+        xhr: function(){
+                var xhr = new XMLHttpRequest();
+
+                xhr.upload.addEventListener('progress', function(evt){
+                    if(evt.lengthComputable){
+                        var percentage = parseInt((uploadedSize + evt.loaded)/totalFileSize * 100);
+                        $('.progress-bar').text(percentage + '%');
+                        $('.progress-bar').width(percentage + '%');
+                        $('.progress').css('display', 'block');
+                        if(percentage == 100){
+                            resetIconAndProgress();
+                        }
+                    }
+                }, false);
+            return xhr;
+        }
+    });
+}
+
 
 $(document).ready(function(){
 
@@ -59,60 +102,63 @@ $(document).ready(function(){
             fileObj[file.name] = file;
             displayFileName(file.name);
         }
+        $(this).val('');
     });
 
     $('#upload-btn').click(function(){
         cleanMessages();
-        var formData = new FormData();
-        var size=0;
-        for(var filename in fileObj){
-            if(fileObj.hasOwnProperty(filename)){
-                formData.append('uploads[]', fileObj[filename], filename);
-                size++;
-            }
-        }
-        if(size==0)
+        uploadedSize = 0;
+
+        if(jQuery.isEmptyObject(fileObj))
             return alertDanger('No file is attached');
         if($('#school').text() == 'None' || !$('#className').val()){
             return alertDanger('Please fill up school and class name');
         }
-        formData.set('school', $('#school').text());
-        formData.set('class', $('#className').val());
+
+        var totalFileSize=0;
+        var fileArr = [];
+        for(var filename in fileObj){
+            totalFileSize += fileObj[filename].size;
+            fileArr.push(fileObj[filename]);
+        }
+
+        // get authorization for each file and upload them
+        var next = function(){
+            if(fileArr.length == 0)
+                return alertSuccess('Upload Success');
+            var file = fileArr.shift();
+            var fileType = file.type;
+            var filename = file.name;
+            data = {
+                filename: filename,
+                fileType: fileType
+            };
+            // get authorization for upload
+            $.ajax({
+               url: '/private/ajax/uploadAuthorization',
+               type: 'GET',
+               data: data,
+               success: function(result){
+                   // Upload granted
+                   if(result.success){
+                       uploadFile(file, result.signedRequest, fileType, totalFileSize, function(err){
+                            if(err){
+                                alertDanger('Upload for '+filename+' failed');
+                                return resetIconAndProgress();
+                            }
+                            uploadedSize += file.size;
+                            next();
+                       });
+                   }else{ // Upload not granted
+                        alertDanger(result.message);
+                        return resetIconAndProgress();
+                   }
+               }
+           });
+        }
         removeFileNames();
         fileObj = {};
-
-        $.ajax({
-            url: '/private/ajax/uploadFiles',
-            type: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function(data){
-                if(data.success){
-                    alertSuccess('Upload Success');
-                }else{
-                    alertDanger(data.message);
-                }
-            },
-            xhr: function(){
-                var xhr = new XMLHttpRequest();
-
-                xhr.upload.addEventListener('progress', function(evt){
-                    if(evt.lengthComputable){
-                        var percentage = parseInt(evt.loaded/evt.total * 100);
-                        $('.progress-bar').text(percentage + '%');
-                        $('.progress-bar').width(percentage + '%');
-                        $('.progress').css('display', 'block');
-                        if(percentage == 100){
-                            $('#upload-icon').css('display','inline');
-                            $('.progress').css('display','none');
-                        }
-                    }
-                }, false);
-
-                return xhr;
-            }
-        });
+        next();
     });
 
 });

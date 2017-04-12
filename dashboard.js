@@ -9,8 +9,15 @@ var bcrypt = require('bcrypt');
 var formidable = require('formidable');
 var async = require('async');
 var path = require('path');
+var aws = require('aws-sdk');
 
 router.use(bodyParser.json());
+
+var S3_BUCKET = process.env.S3_BUCKET;
+var S3_BUCKET_LOCATION = process.env.S3_BUCKET_LOCATION;
+aws.config = new aws.Config();
+aws.config.accessKeyId = process.env.AWS_ACCESS_KEY_ID
+aws.config.secretAccessKey = process.env.AWS_SECRETE_KEY;
 
 var authenticateSession = function(req, res, next){
     if(!req.session.username){
@@ -117,7 +124,35 @@ router.post('/private/ajax/updatePassword', function(req, res){
     });
 });
 
+router.get('/private/ajax/uploadAuthorization', function(req, res){
+    var s3 = new aws.S3();
 
+    var filename = req.query['filename'];
+    var fileType = req.query['fileType'];
+
+    var s3Params = {
+        Bucket: S3_BUCKET,
+        Key: filename,
+        Expires: 300,
+        ContentType: fileType,
+        ACL: 'public-read'
+    };
+    s3.getSignedUrl('putObject', s3Params, function(err, data){
+        if(err){
+            console.log(err);
+            return res.send({success:false, message: 'Upload not authorized'});
+        }
+        var retData = {
+            success: true,
+            signedRequest: data,
+            url: 'https://'+S3_BUCKET_LOCATION+'.amazonaws.com/'+S3_BUCKET+'/'+filename
+        };
+        res.send(retData);
+    });
+});
+
+
+/* Deprecated, now uploaded filed are sent to Amazon S3 server */
 router.post('/private/ajax/uploadFiles', function(req, res){
     var fileInfo = {};
     var files = [];
@@ -152,5 +187,6 @@ router.post('/private/ajax/uploadFiles', function(req, res){
 
     form.parse(req);
 });
+
 
 module.exports = router;
