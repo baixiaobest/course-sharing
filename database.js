@@ -67,10 +67,10 @@ Database.prototype.updatePassword = function(username, password, callback){
     });
 }
 
-Database.prototype.addFile = function(filename, filenamePath, className, school, callback){
+Database.prototype.addFile = function(filename, filenameType, className, school, callback){
     var data = {
         filename: filename, 
-        filenamePath: filenamePath, 
+        filenameType: filenameType, 
         className: className,
         school: school
     };

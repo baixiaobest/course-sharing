@@ -78,6 +78,14 @@ var uploadFile = function(file, signedRequest, contentType, totalFileSize, callb
     });
 }
 
+var registerFileToDatabase = function(filename, fileType, className, school, callback){
+    $.ajax({
+        url: '/private/ajax/registerUploadedFile',
+        type: 'POST',
+        data: {filename: filename, fileType: fileType, className: className, school: school}
+    });
+}
+
 
 $(document).ready(function(){
 
@@ -108,10 +116,12 @@ $(document).ready(function(){
     $('#upload-btn').click(function(){
         cleanMessages();
         uploadedSize = 0;
+        var school = $('#school').text();
+        var className = $('#className').val();
 
         if(jQuery.isEmptyObject(fileObj))
             return alertDanger('No file is attached');
-        if($('#school').text() == 'None' || !$('#className').val()){
+        if(school == 'None' || !className){
             return alertDanger('Please fill up school and class name');
         }
 
@@ -147,6 +157,8 @@ $(document).ready(function(){
                                 return resetIconAndProgress();
                             }
                             uploadedSize += file.size;
+                            alertSuccess('Uploaded: '+filename);
+                            registerFileToDatabase(filename, fileType, school, className);
                             next();
                        });
                    }else{ // Upload not granted

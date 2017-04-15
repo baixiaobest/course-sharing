@@ -150,42 +150,17 @@ router.get('/private/ajax/uploadAuthorization', function(req, res){
     });
 });
 
-
-/* Deprecated, now uploaded filed are sent to Amazon S3 server */
-// router.post('/private/ajax/uploadFiles', function(req, res){
-//     var fileInfo = {};
-//     var files = [];
-//     var form = new formidable.IncomingForm();
-//     form.multiples = true;
-//     form.uploadDir = './Uploads';
-    
-//     form.on('file', function(field, file){
-//         files.push(file);
-//     });
-
-//     form.on('field', function(name, value){
-//         fileInfo[name] = value;
-//     });
-
-//     form.on('end', function(){
-//         async.eachLimit(files, 10, function(file, callback){
-//             var hashName = path.basename(file.path);
-//             var extension = path.extname(file.name);
-//             var fileName = path.basename(file.name, extension);
-//             var filePath = path.join(form.uploadDir, fileName+'_'+hashName+extension);
-//             fs.rename(file.path, filePath, function(err){
-//                 database.addFile(fileName, filePath, fileInfo['class'], fileInfo['school'], callback);
-//             }); 
-//         }, function(err){
-//             if(err){
-//                 return console.log('File upload cannot register to database');
-//             }
-//         });
-//         res.send({success: true});
-//     });
-
-//     form.parse(req);
-// });
+router.post('/private/ajax/registerUploadedFile', function(req, res){
+    var filename = req.body.filename;
+    var fileType = req.body.fileType;
+    var className = req.body.className;
+    var school = req.body.school;
+    database.addFile(filename, fileType, className, school, function(err){
+        if(err)
+            console.log('Register uploaded file failed for '+filename);
+    });
+    res.end();
+});
 
 
 module.exports = router;
