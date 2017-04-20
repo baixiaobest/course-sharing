@@ -189,5 +189,32 @@ router.get('/private/ajax/searchFiles', function(req, res){
 });
 
 
+router.get('/private/ajax/downloadAuthorization', function(req, res){
+    var s3 = new aws.S3();
+
+    var filename = req.query['filename'];
+    var fileType = req.query['fileType'];
+
+    var s3Params = {
+        Bucket: S3_BUCKET,
+        Key: filename,
+        Expires: 300
+        // ContentType: fileType,
+        // ACL: 'public-read'
+    };
+    s3.getSignedUrl('getObject', s3Params, function(err, data){
+        if(err){
+            console.log(err);
+            return res.send({success:false, message: 'Download not authorized'});
+        }
+        var retData = {
+            success: true,
+            signedRequest: data,
+            url: 'https://'+S3_BUCKET_LOCATION+'.amazonaws.com/'+S3_BUCKET+'/'+filename
+        };
+        res.send(retData);
+    });
+});
+
 
 module.exports = router;

@@ -67,12 +67,12 @@ Database.prototype.updatePassword = function(username, password, callback){
     });
 }
 
-Database.prototype.addFile = function(filename, filenameType, className, school, callback){
+Database.prototype.addFile = function(filename, fileType, className, school, callback){
     
     var data = {
         filename: filename, 
         filenameLower: filename.toLowerCase(),
-        filenameType: filenameType, 
+        fileType: fileType, 
         className: className,
         school: school
     };
@@ -88,7 +88,7 @@ Database.prototype.findFiles = function(keywords, className, school, callback){
     var formatData = function(err, docs){
         var data = [];
         docs.forEach(function(ele){
-            data.push(ele.filename);
+            data.push({filename: ele.filename, fileType: ele.fileType});
         });
         callback(null, data);
     }

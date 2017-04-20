@@ -13,6 +13,38 @@ var alertSuccess = function(message){
     $('.alert-success').text(message);
 }
 
+var downloadFile = function(filename, fileType){
+    var data = {filename: filename, fileType: fileType};
+    $.ajax({
+        url: '/private/ajax/downloadAuthorization',
+        type: 'GET',
+        data: data,
+        success: function(result){
+            if(!result.success)
+                return alertDanger(result.message);
+            window.open(result.signedRequest);
+        }
+    })
+}
+
+var displaySearchResults = function(data){
+    $('#resultList').html('');
+    var entryNum = 0;
+    data.forEach(function(ele){
+        var entryId = 'entry-'+entryNum++;
+        $('#resultList')
+        .append("<a id=\""+entryId+"\" href=\"#\" class=\"listEntry list-group-item\">\
+                    <h4 class=\"list-group-item-heading\">"+ele.filename+"</h4>\
+                    <input style=\"display:none\" value=\""+ele.fileType+"\"></input>\
+                </a>");
+        $('#'+entryId).click(function(){
+            var filename = $("#"+entryId+" h4").text();
+            var fileType = $("#"+entryId+" input").val();
+            downloadFile(filename, fileType);
+        });
+    });
+}
+
 $(document).ready(function(){
     $.ajax({url:'/private/ajax/username',
         success: function(result){
@@ -23,7 +55,6 @@ $(document).ready(function(){
     $('.selectSchool').click(function(){
         $('#school').text($(this).text());
     });
-
 
     $('#searchButton').click(function(){
         cleanMessages();
@@ -45,7 +76,9 @@ $(document).ready(function(){
             type: 'get',
             data: data,
             success: function(result){
-                
+                if(!result.success)
+                    alertDanger(result.message);
+                displaySearchResults(result.data);
             }
         });
 
