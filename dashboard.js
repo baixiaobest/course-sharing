@@ -50,9 +50,9 @@ router.get('/private/:privateFile', function(req, res){
     );
 });
 
-////////////////////////////////
-/////////     AJAX    //////////
-////////////////////////////////
+//////////////////////////////////////////////////////////
+/////////////      Profile and Password      /////////////
+//////////////////////////////////////////////////////////
 
 router.get('/private/ajax/username', function(req, res){
     res.json({username:req.session.username});
@@ -123,6 +123,10 @@ router.post('/private/ajax/updatePassword', function(req, res){
     });
 });
 
+//////////////////////////////////////////////////////////
+/////////////           File Upload          /////////////
+//////////////////////////////////////////////////////////
+
 router.get('/private/ajax/uploadAuthorization', function(req, res){
     var s3 = new aws.S3();
 
@@ -161,6 +165,29 @@ router.post('/private/ajax/registerUploadedFile', function(req, res){
     });
     res.end();
 });
+
+//////////////////////////////////////////////////////////
+/////////////          Search Files          /////////////
+//////////////////////////////////////////////////////////
+
+router.get('/private/ajax/searchFiles', function(req, res){
+    var keywordStr = req.query.keyword.toLowerCase();
+    var school = req.query.school;
+    var className = req.query.className;
+    var keywords = keywordStr.replace(/\s\s+/g, ' ');
+    if(keywords == " " || keywords == "")
+        keywords = null;
+    else
+        keywords = keywords.split(' ').filter(Boolean);
+    database.findFiles(keywords, className, school, function(err, data){
+        if(err){
+            console.log(err);
+            return res.send({success: false, message: 'Database Error'});
+        }
+        res.send({success: true, data: data});
+    });
+});
+
 
 
 module.exports = router;

@@ -11,6 +11,7 @@ var usersSchema = new Schema({
 
 var uploadFilesSchema = new Schema({
     filename: String,
+    filenameLower: String,
     filenameType: String,
     className: String,
     school: String

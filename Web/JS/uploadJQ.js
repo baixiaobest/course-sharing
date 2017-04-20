@@ -158,7 +158,7 @@ $(document).ready(function(){
                             }
                             uploadedSize += file.size;
                             alertSuccess('Uploaded: '+filename);
-                            registerFileToDatabase(filename, fileType, school, className);
+                            registerFileToDatabase(filename, fileType, className, school);
                             next();
                        });
                    }else{ // Upload not granted

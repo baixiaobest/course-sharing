@@ -68,8 +68,10 @@ Database.prototype.updatePassword = function(username, password, callback){
 }
 
 Database.prototype.addFile = function(filename, filenameType, className, school, callback){
+    
     var data = {
         filename: filename, 
+        filenameLower: filename.toLowerCase(),
         filenameType: filenameType, 
         className: className,
         school: school
@@ -79,6 +81,34 @@ Database.prototype.addFile = function(filename, filenameType, className, school,
             return callback(err);
         callback();
     });
+}
+
+Database.prototype.findFiles = function(keywords, className, school, callback){
+
+    var formatData = function(err, docs){
+        var data = [];
+        docs.forEach(function(ele){
+            data.push(ele.filename);
+        });
+        callback(null, data);
+    }
+
+    if(keywords == null){
+        uploadFileModel.find({
+            className: className,
+            school: school
+        }, formatData);
+    }else{
+        var ORQuery = [];
+        keywords.forEach(function(ele){
+            ORQuery.push({filenameLower: {$regex: ele}});
+        });
+        uploadFileModel.find({
+            $or: ORQuery,
+            className: className,
+            school: school
+        }, formatData);
+    }
 }
 
 module.exports = new Database();
