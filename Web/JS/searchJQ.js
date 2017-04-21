@@ -34,7 +34,8 @@ var displaySearchResults = function(data){
         var entryId = 'entry-'+entryNum++;
         $('#resultList')
         .append("<a id=\""+entryId+"\" class=\"listEntry list-group-item\">\
-                    <h4 class=\"list-group-item-heading\">"+ele+"</h4>\
+                    <h4 class=\"list-group-item-heading\">"+ele.filename+"</h4>\
+                    <p class=\"list-group-item-text\">Class: "+ele.className+"</p>\
                 </a>");
         $('#'+entryId).click(function(){
             var filename = $("#"+entryId+" h4").text();

@@ -88,14 +88,14 @@ Database.prototype.findFiles = function(keywords, className, school, callback){
     var formatData = function(err, docs){
         var data = [];
         docs.forEach(function(ele){
-            data.push(ele.filename);
+            data.push({filename: ele.filename, className: ele.className});
         });
         callback(null, data);
     }
 
     if(keywords == null){
         uploadFileModel.find({
-            className: className,
+            className: {$regex: className},
             school: school
         }, formatData);
     }else{
@@ -105,7 +105,7 @@ Database.prototype.findFiles = function(keywords, className, school, callback){
         });
         uploadFileModel.find({
             $or: ORQuery,
-            className: className,
+            className: {$regex: className},
             school: school
         }, formatData);
     }
