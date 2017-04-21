@@ -41,6 +41,8 @@ var displaySearchResults = function(data){
             downloadFile(filename);
         });
     });
+    if(data.length==0)
+        alertDanger('No document found in our database');
 }
 
 $(document).ready(function(){
