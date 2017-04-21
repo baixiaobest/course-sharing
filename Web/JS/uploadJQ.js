@@ -89,9 +89,12 @@ var registerFileToDatabase = function(filename, fileType, className, school, cal
 
 $(document).ready(function(){
 
-    $.ajax({url:'/private/ajax/username',
+    $.ajax({url: '/private/ajax/userProfile',
         success: function(result){
-            $('#greeting').text('Hello, '+result.username);
+            if(result){
+                $('#greeting').text('Hello, '+result.username);
+                $('#school').text(result.school);
+            }
         }
     });
 

@@ -16,17 +16,13 @@ var alertSuccess = function(message){
 var alert
 
 $(document).ready(function(){
-    $.ajax({url:'/private/ajax/username',
-        success: function(result){
-            $('#greeting').text('Hello, '+result.username);
-        }
-    });
 
     $.ajax({url: '/private/ajax/userProfile',
         success: function(result){
             if(result){
                 $('#name').val(result.name);
                 $('#username').val(result.username);
+                $('#greeting').text('Hello, '+result.username);
                 $('#email').val(result.email);
                 $('#school').text(result.school);
             }

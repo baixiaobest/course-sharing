@@ -37,6 +37,8 @@ var authenticate = function(err, req, userdata, callback){
 };
 
 router.post('/login', authenticateSession, function(req, res){
+    var username = req.body.username.toLowerCase();
+
     var nextAction = function(userdata){
         var data;
         if(userdata !== null){
@@ -50,7 +52,7 @@ router.post('/login', authenticateSession, function(req, res){
 
     async.series([
         function(callback){
-            database.findUserWithEmail(req.body.username, function(err, userdata){
+            database.findUserWithEmail(username, function(err, userdata){
                 authenticate(err, req, userdata, function(result){
                     if(result)
                         return nextAction(userdata);
@@ -59,7 +61,7 @@ router.post('/login', authenticateSession, function(req, res){
             });
         },
         function(callback){
-            database.findUserWithUsername(req.body.username, function(err, userdata){
+            database.findUserWithUsername(username, function(err, userdata){
                 authenticate(err, req, userdata, function(result){
                     if(result)
                         return nextAction(userdata);

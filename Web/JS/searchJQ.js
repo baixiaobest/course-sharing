@@ -44,15 +44,20 @@ var displaySearchResults = function(data){
 }
 
 $(document).ready(function(){
-    $.ajax({url:'/private/ajax/username',
-        success: function(result){
-            $('#greeting').text('Hello, '+result.username);
-        }
-    });
 
     $('.selectSchool').click(function(){
         $('#school').text($(this).text());
     });
+
+    $.ajax({url: '/private/ajax/userProfile',
+        success: function(result){
+            if(result){
+                $('#greeting').text('Hello, '+result.username);
+                $('#school').text(result.school);
+            }
+        }
+    });
+
 
     $('#searchButton').click(function(){
         cleanMessages();

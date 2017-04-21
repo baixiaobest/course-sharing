@@ -48,8 +48,8 @@ var registerationSucceeds = function(req, res, userdata){
 }
 
 router.post('/register', function(req, res){
-    var username = req.body.username;
-    var email = req.body.email;
+    var username = req.body.username.toLowerCase();
+    var email = req.body.email.toLowerCase();
     var password = req.body.password;
 
     async.series([

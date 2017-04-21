@@ -157,7 +157,7 @@ router.get('/private/ajax/uploadAuthorization', function(req, res){
 router.post('/private/ajax/registerUploadedFile', function(req, res){
     var filename = req.body.filename;
     var fileType = req.body.fileType;
-    var className = req.body.className.replace(' ', '').toLowerCase();
+    var className = req.body.className.replace(/ |-/g, '').toLowerCase();
     var school = req.body.school;
     database.addFile(filename, fileType, className, school, function(err){
         if(err)
@@ -173,7 +173,7 @@ router.post('/private/ajax/registerUploadedFile', function(req, res){
 router.get('/private/ajax/searchFiles', function(req, res){
     var keywordStr = req.query.keyword.toLowerCase();
     var school = req.query.school;
-    var className = req.query.className.replace(' ', '').toLowerCase();
+    var className = req.query.className.replace(/ |-/g, '').toLowerCase();
     var keywords = keywordStr.replace(/\s\s+/g, ' ');
     if(keywords == " " || keywords == "")
         keywords = null;
