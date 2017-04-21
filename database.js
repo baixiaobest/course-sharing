@@ -88,7 +88,7 @@ Database.prototype.findFiles = function(keywords, className, school, callback){
     var formatData = function(err, docs){
         var data = [];
         docs.forEach(function(ele){
-            data.push({filename: ele.filename, fileType: ele.fileType});
+            data.push(ele.filename);
         });
         callback(null, data);
     }

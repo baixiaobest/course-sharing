@@ -13,8 +13,8 @@ var alertSuccess = function(message){
     $('.alert-success').text(message);
 }
 
-var downloadFile = function(filename, fileType){
-    var data = {filename: filename, fileType: fileType};
+var downloadFile = function(filename){
+    var data = {filename: filename};
     $.ajax({
         url: '/private/ajax/downloadAuthorization',
         type: 'GET',
@@ -33,14 +33,12 @@ var displaySearchResults = function(data){
     data.forEach(function(ele){
         var entryId = 'entry-'+entryNum++;
         $('#resultList')
-        .append("<a id=\""+entryId+"\" href=\"#\" class=\"listEntry list-group-item\">\
-                    <h4 class=\"list-group-item-heading\">"+ele.filename+"</h4>\
-                    <input style=\"display:none\" value=\""+ele.fileType+"\"></input>\
+        .append("<a id=\""+entryId+"\" class=\"listEntry list-group-item\">\
+                    <h4 class=\"list-group-item-heading\">"+ele+"</h4>\
                 </a>");
         $('#'+entryId).click(function(){
             var filename = $("#"+entryId+" h4").text();
-            var fileType = $("#"+entryId+" input").val();
-            downloadFile(filename, fileType);
+            downloadFile(filename);
         });
     });
 }

@@ -193,7 +193,6 @@ router.get('/private/ajax/downloadAuthorization', function(req, res){
     var s3 = new aws.S3();
 
     var filename = req.query['filename'];
-    var fileType = req.query['fileType'];
 
     var s3Params = {
         Bucket: S3_BUCKET,
@@ -208,7 +207,6 @@ router.get('/private/ajax/downloadAuthorization', function(req, res){
         var retData = {
             success: true,
             signedRequest: data,
-            url: 'https://'+S3_BUCKET_LOCATION+'.amazonaws.com/'+S3_BUCKET+'/'+filename
         };
         res.send(retData);
     });
