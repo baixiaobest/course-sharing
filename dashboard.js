@@ -157,7 +157,7 @@ router.get('/private/ajax/uploadAuthorization', function(req, res){
 router.post('/private/ajax/registerUploadedFile', function(req, res){
     var filename = req.body.filename;
     var fileType = req.body.fileType;
-    var className = req.body.className;
+    var className = req.body.className.replace(' ', '').toLowerCase();
     var school = req.body.school;
     database.addFile(filename, fileType, className, school, function(err){
         if(err)
@@ -173,7 +173,7 @@ router.post('/private/ajax/registerUploadedFile', function(req, res){
 router.get('/private/ajax/searchFiles', function(req, res){
     var keywordStr = req.query.keyword.toLowerCase();
     var school = req.query.school;
-    var className = req.query.className;
+    var className = req.query.className.replace(' ', '').toLowerCase();
     var keywords = keywordStr.replace(/\s\s+/g, ' ');
     if(keywords == " " || keywords == "")
         keywords = null;
@@ -199,8 +199,6 @@ router.get('/private/ajax/downloadAuthorization', function(req, res){
         Bucket: S3_BUCKET,
         Key: filename,
         Expires: 300
-        // ContentType: fileType,
-        // ACL: 'public-read'
     };
     s3.getSignedUrl('getObject', s3Params, function(err, data){
         if(err){

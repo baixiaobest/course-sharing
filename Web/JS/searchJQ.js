@@ -73,7 +73,7 @@ $(document).ready(function(){
 
         $.ajax({
             url: '/private/ajax/searchFiles',
-            type: 'get',
+            type: 'GET',
             data: data,
             success: function(result){
                 if(!result.success)
